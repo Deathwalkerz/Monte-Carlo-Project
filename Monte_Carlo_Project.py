@@ -156,11 +156,11 @@ def collision(robot):
     
     if current_pos[0] > grid_size:
         robot.set_coordinates(current_pos[0] - 1, current_pos[1] + random.randint(-1,1))
-    if current_pos[0] < grid_size:
+    if current_pos[0] < 0:
         robot.set_coordinates(current_pos[0] + 1, current_pos[1] + random.randint(-1,1))
     if current_pos[1] > grid_size:
         robot.set_coordinates(current_pos[0] + random.randint(-1,1), current_pos[1] - 1)
-    if current_pos[1] < grid_size:
+    if current_pos[1] < 0:
         robot.set_coordinates(current_pos[0] + random.randint(-1,1), current_pos[1] + 1)
         
 
