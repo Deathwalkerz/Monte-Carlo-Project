@@ -65,11 +65,7 @@ class robot:
         
         x = self.x + step + round(random.gauss(0, 0.5))
         y = self.y + step + round(random.gauss(0, 0.5))
-
-        # cyclic truncate
-        x %= grid_size
-        y %= grid_size
-
+        
         # set particle
         res = robot()
         res.set_coordinates(x, y)
@@ -149,19 +145,19 @@ def getRobotCoordinates(robots, currRobot):
     return allRobotCoords
 
 
-def collision(robot):
+def collision(robot, robots):
     current_pos = robot.get_coordinates()
     if current_pos in getRobotCoordinates(robots, robot):
         robot.set_coordinates(current_pos[0] + random.randint(-1,1) , current_pos[1] - 1)
     
-    if current_pos[0] > grid_size:
-        robot.set_coordinates(current_pos[0] - 1, current_pos[1] + random.randint(-1,1))
+    if current_pos[0] > grid_size-1:
+        robot.set_coordinates(grid_size-2, current_pos[1] + random.randint(-1,1))
     if current_pos[0] < 0:
-        robot.set_coordinates(current_pos[0] + 1, current_pos[1] + random.randint(-1,1))
-    if current_pos[1] > grid_size:
-        robot.set_coordinates(current_pos[0] + random.randint(-1,1), current_pos[1] - 1)
+        robot.set_coordinates(1, current_pos[1] + random.randint(-1,1))
+    if current_pos[1] > grid_size-1:
+        robot.set_coordinates(current_pos[0] + random.randint(-1,1), grid_size-2)
     if current_pos[1] < 0:
-        robot.set_coordinates(current_pos[0] + random.randint(-1,1), current_pos[1] + 1)
+        robot.set_coordinates(current_pos[0] + random.randint(-1,1), 1)
         
 
 def visualization(robot):
@@ -179,8 +175,31 @@ def visualization(robot):
     plt.show()
     
 myrobot = robot()
+myRobots=[myrobot]
 visualization(myrobot)
 
 myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
 
+visualization(myrobot)
+myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
+visualization(myrobot)
+myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
+visualization(myrobot)
+myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
+visualization(myrobot)
+myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
+visualization(myrobot)
+myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
+visualization(myrobot)
+myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
+visualization(myrobot)
+myrobot = myrobot.move(1)
+collision(myrobot, myRobots)
 visualization(myrobot)
