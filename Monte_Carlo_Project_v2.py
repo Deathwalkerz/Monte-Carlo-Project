@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[118]:
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,22 +25,40 @@ def split(arr, size):
 class robot:
     
     def __init__(self):
-        self.sample = grid_size * np.random.random_sample((sample_size, 2))
+        self.sample = []
         self.weights = []
+        for i in range(sample_size):
+            sample_coords = [np.random.randint(0, grid_size), np.random.randint(0, grid_size)]
+            self.sample.append(sample_coords)
         
         
     
-    #def sense(self, coords):
+    def sense(self, world, robo_index):
+        robots = world.get_robot_locations()
+        colors = world.get_grid_color()
+        robot = robots[robo_index]
+        robo_color = colors[robot[0]][robot[1]]
+        for sample in self.sample:
+            if robo_color == colors[int(sample[0])][int(sample[1])]:
+                self.weights.append(0.9)
+            else:
+                self.weights.append(0.1)
         
+        self.weights = np.divide(self.weights, sum(self.weights))
         
         
     def resample(self):
-        new_sample = np.random.choice(self.sample, len(self.sample), p=self.weights)
+        new_sample = []
+        new_sample.append(np.random.choice([row[0] for row in self.sample], len(self.sample), p=self.weights))
+        new_sample.append(np.random.choice([row[1] for row in self.sample], len(self.sample), p=self.weights))
         self.sample = new_sample
         return self.sample
         
         
     def policy(self):
+        
+        x_sum = 0
+        y_sum = 0
         for part in self.sample:
             x_sum += part[0]
             y_sum += part[1]
@@ -62,7 +80,7 @@ class world:
                         self.x.append(i)
                         self.y.append(j)
                         self.grid_colors[i][j]= "W" if choose_color == 0 else "B"
-        self.robots=["robot()","robot()","robot()"]
+        self.robots=[robot(),robot(),robot()]
         for k in range(len(self.robots)):
             self.robot_locations.append([np.random.randint(0,grid_size),np.random.randint(0,grid_size)])
             
@@ -71,8 +89,17 @@ class world:
     
     def get_coordinates(self):
         return [self.x, self.y]
-
     
+    def update_moves(self):
+        for index, loc in enumerate(self.robot_locations):
+            self.robot_locations[index] =  [self.robot_locations[index][0] + self.robots[index].policy()[0], self.robot_locations[index][1] + self.robots[index].policy()[1]]             + [round(random.gauss(0, 0.5)), round(random.gauss(0, 0.5))]
+        
+            self.robot_locations[index][0] %= grid_size
+            self.robot_locations[index][1] %= grid_size
+    
+    def get_robot_locations(self):
+        return self.robot_locations   
+        
 myWorld = world(grid_size, subgrid_size)
 grid_coords=myWorld.get_coordinates()
 coords = myWorld.get_grid_color()
@@ -91,18 +118,35 @@ for p in range(0,grid_size,subgrid_size):
                 s[i][j]= "W" if choose_color == 0 else "B"
             
             
-def update_moves():
-    for index, loc in enumerate(robot_locations):
-        robot_locations[i] =  [robot_locations[i][0] + myWorld.robots[index].policy, robot_locations[i][1] + myWorldrobots[index].policy]         + [round(random.gauss(0, 0.5)), round(random.gauss(0, 0.5))]                 
+
+        
+        
                 
                 
-plt.figure(figsize=(grid_size,grid_size))
+fig = plt.figure(figsize=(grid_size,grid_size))
+ax = fig.gca()
 plt.plot(grid_coords[0],grid_coords[1], 'sy', markersize=20, mfc='none')
+
+
 for i in range(grid_size):
     for j in range(grid_size):
         plt.plot(i, j, 'sy', markersize=20, mfc=('none' if coords[i][j] == "B" else '#d3d3d3'))
         
+plt.plot([myWorld.robot_locations[0][0]],[myWorld.robot_locations[0][1]], 'r', marker="$R$", markersize=10) 
         
+def animate(i):
+    number_string = str(i).zfill(len(str(20)))
+    for index, robot in enumerate(myWorld.robots):
+        robot.sense(myWorld, index)
+        robot.resample()
+        myWorld.update_moves()
+    
+    
+    plt.plot([myWorld.robot_locations[0][0]],[myWorld.robot_locations[0][1]], 'r', marker="$R$", markersize=10) 
+    ax.set_title('t = ' + number_string)
+
+ani = animation.FuncAnimation(fig, animate, 20)     
+               
         
 plt.axis('off')        
 plt.show()
