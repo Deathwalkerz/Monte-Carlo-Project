@@ -1,3 +1,8 @@
+
+# coding: utf-8
+
+# In[1]:
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -20,21 +25,26 @@ def split(arr, size):
 class robot:
     
     def __init__(self):
-        self.sample = []
+        self.sample = grid_size * np.random.random_sample((sample_size, 2))
         self.weights = []
         
         
     
-    def sense(self, coords):
+    #def sense(self, coords):
         
         
         
     def resample(self):
-        new = np.random.choice(self.sample, 5, p=[0.5, 0.1, 0.1, 0.3])
-        self.sample = new
-        return new
+        new_sample = np.random.choice(self.sample, len(self.sample), p=self.weights)
+        self.sample = new_sample
+        return self.sample
+        
         
     def policy(self):
+        for part in self.sample:
+            x_sum += part[0]
+            y_sum += part[1]
+        return [int(x_sum/(2*len(self.sample))), int(y_sum/(2*len(self.sample)))]
     
 
 class world:
@@ -79,12 +89,20 @@ for p in range(0,grid_size,subgrid_size):
                 c.append(i)
                 d.append(j)
                 s[i][j]= "W" if choose_color == 0 else "B"
+            
+            
+def update_moves():
+    for index, loc in enumerate(robot_locations):
+        robot_locations[i] =  [robot_locations[i][0] + myWorld.robots[index].policy, robot_locations[i][1] + myWorldrobots[index].policy]         + [round(random.gauss(0, 0.5)), round(random.gauss(0, 0.5))]                 
+                
                 
 plt.figure(figsize=(grid_size,grid_size))
 plt.plot(grid_coords[0],grid_coords[1], 'sy', markersize=20, mfc='none')
 for i in range(grid_size):
     for j in range(grid_size):
         plt.plot(i, j, 'sy', markersize=20, mfc=('none' if coords[i][j] == "B" else '#d3d3d3'))
+        
+        
         
 plt.axis('off')        
 plt.show()
