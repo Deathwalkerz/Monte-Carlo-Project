@@ -66,6 +66,10 @@ class robot:
         x = self.x + step + round(random.gauss(0, 0.5))
         y = self.y + step + round(random.gauss(0, 0.5))
         
+
+        x %= grid_size
+        y %= grid_size
+        
         # set particle
         res = robot()
         res.set_coordinates(x, y)
