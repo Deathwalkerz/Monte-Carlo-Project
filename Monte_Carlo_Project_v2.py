@@ -54,6 +54,9 @@ class robot:
                 self.weights[sample_i] = 0.9
             else:
                 self.weights[sample_i] = 0.1
+            if [sample_.get_coordinates()[0],sample_.get_coordinates()[1]] == [grid_size-1, grid_size-1]:
+                self.weights[sample_i] = 1
+            
         print("Loop ended. Weights: ", self.weights)
         self.weights = np.divide(self.weights, sum(self.weights))
         
@@ -122,6 +125,7 @@ coords = myWorld.get_grid_color()
 fig = plt.figure(figsize=(grid_size,grid_size))
 ax = plt.axes()
 plt.plot(grid_coords[0],grid_coords[1], 'sy', markersize=20, mfc='none')
+
 rob_plots=[]
 for i in range(grid_size):
     for j in range(grid_size):
@@ -165,6 +169,6 @@ def animate(frame):
 
 ani = animation.FuncAnimation(fig, animate, init_func=plot_init, frames=200,interval=1000, blit=True)  
 
-    
+plt.plot(grid_size-1, grid_size-1, '#000000', marker="$G$", markersize=10)
 plt.axis('off')
 plt.show()
